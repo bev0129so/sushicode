@@ -104,7 +104,7 @@ public class TreeSearch {
 
     /**
      * https://programmercarl.com/0236.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88.html
-     * // 待理解
+     * // TODO: 待理解, 注意p,q在树中一定存在
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null || p==root || q == root) {
@@ -120,5 +120,40 @@ public class TreeSearch {
             return right;
         }
         return null;
+    }
+
+    /**
+     * https://programmercarl.com/0235.%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88.html#%E6%80%9D%E8%B7%AF
+     * 利用二叉搜索树的特性，看作数组，第一次遇到 cur节点是数值在[q, p]区间中，那么cur就是 q和p的最近公共祖先
+     */
+    public TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode big = p.val > q.val ? p : q;
+        TreeNode small = p.val > q.val ? q : p;
+        if (root.val >= small.val && root.val <= big.val) {
+            return root;
+        } else if (root.val > small.val) {
+            return lowestCommonAncestorBST(root.left, p, q);
+        } else if (root.val < small.val) {
+            return lowestCommonAncestorBST(root.right, p, q);
+        }
+        return null;
+    }
+
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return buildBST(nums, 0, nums.length);
+    }
+    
+    public TreeNode buildBST(int[] nums, int l, int r) {
+        if (l >= r) {
+            return null;
+        }
+        int mid = l + (r - l) / 2;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = buildBST(nums, l, mid);
+        node.right = buildBST(nums, mid + 1, r);
+        return node;
     }
 }
