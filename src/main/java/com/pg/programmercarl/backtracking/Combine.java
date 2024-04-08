@@ -116,11 +116,11 @@ public class Combine {
 
 
     Map<Character, char[]> map = new HashMap<>();
-    List<String> list = new ArrayList<>();
+    List<String> listc = new ArrayList<>();
     List<Character> cr = new ArrayList<>();
     public List<String> letterCombinations(String digits) {
         if (digits == null || digits.equals("")) {
-            return list;
+            return listc;
         }
         map.put('2', new char[]{'a', 'b', 'c'});
         map.put('3', new char[]{'d', 'e', 'f'});
@@ -131,7 +131,7 @@ public class Combine {
         map.put('8', new char[]{'t', 'u', 'v'});
         map.put('9', new char[]{'w', 'x', 'y', 'z'});
         letterCombinationsBackTracking(digits.toCharArray(), 0);
-        return list;
+        return listc;
     }
 
     public void letterCombinationsBackTracking(char[] digits, int startIdx) {
@@ -142,7 +142,7 @@ public class Combine {
             for (Character character : characters) {
                 res += character;
             }
-            list.add(res);
+            listc.add(res);
             return;
         }
         for (int i = startIdx; i < digits.length; i++) {

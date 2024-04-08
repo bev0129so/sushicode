@@ -202,5 +202,29 @@ public class Week2 {
             used[i] = false;
         }
     }
-    
+
+    List<List<Integer>> perArr = new ArrayList<>();
+    List<Integer> plist = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        boolean[] used = new boolean[nums.length];
+        permuteBackTracking(nums, used);
+        return perArr;
+    }
+
+    public void permuteBackTracking(int[] nums, boolean[] used) {
+        if (plist.size() == nums.length) {
+            perArr.add(new ArrayList<>(plist));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            plist.add(nums[i]);
+            used[i] = true;
+            permuteBackTracking(nums, used);
+            plist.remove(plist.size() - 1);
+            used[i] = false;
+        }
+    }
 }
