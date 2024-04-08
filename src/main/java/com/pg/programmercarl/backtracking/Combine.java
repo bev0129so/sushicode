@@ -113,4 +113,44 @@ public class Combine {
             used[i] = false;
         }
     }
+
+
+    Map<Character, char[]> map = new HashMap<>();
+    List<String> list = new ArrayList<>();
+    List<Character> cr = new ArrayList<>();
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.equals("")) {
+            return list;
+        }
+        map.put('2', new char[]{'a', 'b', 'c'});
+        map.put('3', new char[]{'d', 'e', 'f'});
+        map.put('4', new char[]{'g', 'h', 'i'});
+        map.put('5', new char[]{'j', 'k', 'l'});
+        map.put('6', new char[]{'m', 'n', 'o'});
+        map.put('7', new char[]{'p', 'q', 'r', 's'});
+        map.put('8', new char[]{'t', 'u', 'v'});
+        map.put('9', new char[]{'w', 'x', 'y', 'z'});
+        letterCombinationsBackTracking(digits.toCharArray(), 0);
+        return list;
+    }
+
+    public void letterCombinationsBackTracking(char[] digits, int startIdx) {
+        if (cr.size() == digits.length) {
+            Character[] characters = new Character[digits.length];
+            cr.toArray(characters);
+            String res = new String();
+            for (Character character : characters) {
+                res += character;
+            }
+            list.add(res);
+            return;
+        }
+        for (int i = startIdx; i < digits.length; i++) {
+            for (int j = 0; j < map.get(digits[i]).length; j++) {
+                cr.add(map.get(digits[i])[j]);
+                letterCombinationsBackTracking(digits, i + 1);
+                cr.remove(cr.size() - 1);
+            }
+        }
+    }
 }
