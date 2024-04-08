@@ -1,9 +1,6 @@
 package com.pg.programmercarl.backtracking;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author luojx
@@ -52,13 +49,68 @@ public class Combine {
             curSum -= i;
         }
     }
+
+
+    List<Integer> list = new ArrayList<>();
+
+    /**
+     * https://programmercarl.com/0039.%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C.html
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        combinationSumBackTracking(candidates, target, 0);
+        return arr;
+    }
     
-    public Integer getSum(Stack<Integer> stack) {
-        int sum = 0;
-        Enumeration<Integer> enumeration = stack.elements();
-        while (enumeration.hasMoreElements()) {
-            sum += enumeration.nextElement();
+    public void combinationSumBackTracking(int[] candidates, int leftVal, int startIdx) {
+        if (leftVal < 0) {
+            return;
         }
-        return sum;
+        if (leftVal == 0) {
+            arr.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = startIdx; i < candidates.length; i++) {
+            list.add(candidates[i]);
+            combinationSumBackTracking(candidates, leftVal - candidates[i], i);
+            list.remove(list.size() - 1);
+        }
+    }
+
+
+    /**
+     * https://programmercarl.com/0040.%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8CII.html#%E6%80%9D%E8%B7%AF
+     * 
+     * @param candidates
+     * @param target
+     * @return {@code List<List<Integer>>}
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        boolean[] used = new boolean[candidates.length];
+        combinationSum2Backtracking(candidates, target, 0, used);
+        return arr;
+    }
+    
+    public void combinationSum2Backtracking(int[] candidates, int leftVal, int startIdx, boolean[] used) {
+        if (leftVal < 0) {
+            return;
+        }
+        if (leftVal == 0) {
+            arr.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = startIdx; i < candidates.length; i++) {
+            // used[i - 1] == true，说明同一树枝candidates[i - 1]使用过
+            // used[i - 1] == false，说明同一树层candidates[i - 1]使用过
+            // 要对同一树层使用过的元素进行跳过
+            if (i > 0 && candidates[i] == candidates[i - 1] && used[i - 1] == false) {
+                continue;
+            }
+            list.add(candidates[i]);
+            used[i] = true;
+            combinationSum2Backtracking(candidates, leftVal - candidates[i], i + 1, used);
+            list.remove(list.size() - 1);
+            used[i] = false;
+        }
     }
 }
