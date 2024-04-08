@@ -115,5 +115,92 @@ public class Week2 {
         }
         return true;
     }
+
+    List<List<Integer>> subsetArr = new ArrayList<>();
+    List<Integer> subsetList = new ArrayList<>();
+
+    /**
+     * https://programmercarl.com/0078.%E5%AD%90%E9%9B%86.html#%E7%AE%97%E6%B3%95%E5%85%AC%E5%BC%80%E8%AF%BE
+     * @param nums
+     * @return {@code List<List<Integer>>}
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        subsetsBackTracking(nums, 0);
+        return subsetArr;
+    }
+    
+    public void subsetsBackTracking(int[] nums, int startIdx) {
+//        if (!subsetList.isEmpty()) {
+            subsetArr.add(new ArrayList<>(subsetList));
+//        }
+        for (int i = startIdx; i < nums.length; i++) {
+            subsetList.add(nums[i]);
+            subsetsBackTracking(nums, i + 1);
+            subsetList.remove(subsetList.size() - 1);
+        }
+    }
+
+    /**
+     * https://programmercarl.com/0090.%E5%AD%90%E9%9B%86II.html
+     * 理解“树层去重”和“树枝去重”非常重要
+     * @param nums
+     * @return {@code List<List<Integer>>}
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        subsetsWithDupBackTracking(nums, 0, used);
+        return subsetArr;
+    }
+    
+    public void subsetsWithDupBackTracking(int[] nums, int startIdx, boolean[] used) {
+        subsetArr.add(new ArrayList<>(subsetList));
+        for (int i = startIdx; i < nums.length; i++) {
+            if (i >= 1 && nums[i] == nums[i - 1] && used[i - 1] == false) {
+                continue;
+            }
+            used[i] = true;
+            subsetList.add(nums[i]);
+            subsetsWithDupBackTracking(nums, i + 1, used);
+            used[i] = false;
+            subsetList.remove(subsetList.size() - 1);
+        }
+    }
+
+
+    /**
+     * https://programmercarl.com/0491.%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97.html
+     * 
+     * @param nums
+     * @return {@code List<List<Integer>>}
+     */
+    public List<List<Integer>> findSubsequences(int[] nums) {
+        boolean[] used = new boolean[nums.length];
+        findSubsequencesBackTracking(nums, 0, used);
+        return subsetArr;
+    }
+    
+    public void findSubsequencesBackTracking(int[] nums, int startIdx, boolean[] used) {
+        if (subsetList.size() >= 2) {
+            subsetArr.add(new ArrayList<>(subsetList));
+        }
+        Set<Integer> set = new HashSet<>();
+        for (int i = startIdx; i < nums.length; i++) {
+            if (set.contains(nums[i])) {
+                continue;
+            }
+            if (!subsetList.isEmpty()) {
+                if (nums[i] < subsetList.get(subsetList.size() - 1)) {
+                    continue;
+                }
+            }
+            set.add(nums[i]);
+            subsetList.add(nums[i]);
+            used[i] = true;
+            findSubsequencesBackTracking(nums, i + 1, used);
+            subsetList.remove(subsetList.size() - 1);
+            used[i] = false;
+        }
+    }
     
 }
