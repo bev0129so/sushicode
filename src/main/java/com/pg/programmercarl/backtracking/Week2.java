@@ -205,6 +205,14 @@ public class Week2 {
 
     List<List<Integer>> perArr = new ArrayList<>();
     List<Integer> plist = new ArrayList<>();
+
+    /**
+     * https://programmercarl.com/0046.%E5%85%A8%E6%8E%92%E5%88%97.html#%E6%80%9D%E8%B7%AF
+     * 排列为什么for循环从0开始，因为集合是有序的，{1, 2} 和{2, 1}是两个集合
+     * 而子集 集合是无序的，子集{1,2} 和 子集{2,1}是一样的
+     * @param nums
+     * @return {@code List<List<Integer>>}
+     */
     public List<List<Integer>> permute(int[] nums) {
         boolean[] used = new boolean[nums.length];
         permuteBackTracking(nums, used);
@@ -226,5 +234,89 @@ public class Week2 {
             plist.remove(plist.size() - 1);
             used[i] = false;
         }
+    }
+
+    /**
+     * https://programmercarl.com/0047.%E5%85%A8%E6%8E%92%E5%88%97II.html
+     * @param nums
+     * @return {@code List<List<Integer>>}
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        permuteUniqueBackTracking(nums, used);
+        return perArr;
+    }
+    
+    public void permuteUniqueBackTracking(int[] nums, boolean[] used) {
+        if (plist.size() == nums.length) {
+            perArr.add(new ArrayList<>(plist));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false) {
+                continue;
+            }
+            used[i] = true;
+            plist.add(nums[i]);
+            permuteUniqueBackTracking(nums, used);
+            used[i] = false;
+            plist.remove(plist.size() - 1);
+        }
+    }
+    
+    public List<String> findItinerary(List<List<String>> tickets) {
+        Collections.sort(tickets, (l1, l2) -> l1.get(1).compareTo(l2.get(1)));
+        boolean[] used = new boolean[tickets.size()];
+        int size = tickets.size();
+        findItineraryBackTracking(tickets, used, "JFK", size);
+        if (arr.size() == 0) {
+            return new ArrayList<>();
+        }
+        return arr.get(0);
+    }
+    
+    public void findItineraryBackTracking(List<List<String>> tickets, boolean[] used, String startAp, int size) {
+        if (arr.size() > 0) {
+            return;
+        }
+        //路径到达某一大小
+        if (list.size() == size) {
+            List<String> r = new ArrayList<>(list);
+            r.add(startAp);
+            arr.add(r);
+            return;
+        }
+        for (int i = 0; i < tickets.size(); i++) {
+            if (used[i] || !tickets.get(i).get(0).equals(startAp)) {
+                continue;
+            }
+            //剪枝
+            if (i > 0 && 
+                    tickets.get(i).get(0).equals(tickets.get(i - 1).get(0)) &&
+                    tickets.get(i).get(1).equals(tickets.get(i - 1).get(1)) &&
+                    used[i - 1] == false
+            ) {
+                continue;
+            }
+            list.add(tickets.get(i).get(0));
+            used[i] = true;
+            findItineraryBackTracking(tickets, used, tickets.get(i).get(1), size);
+            list.remove(list.size() - 1);
+            used[i] = false;
+        }
+    }
+
+    public static void main(String[] args) {
+        Week2 week2 = new Week2();
+        List<List<String>> flights = new ArrayList<>();
+        flights.add(Arrays.asList("MUC", "LHR"));
+        flights.add(Arrays.asList("JFK", "MUC"));
+        flights.add(Arrays.asList("SFO", "SJC"));
+        flights.add(Arrays.asList("LHR", "SFO"));
+        week2.findItinerary(flights);
     }
 }
