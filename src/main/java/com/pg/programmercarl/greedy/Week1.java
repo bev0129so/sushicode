@@ -24,4 +24,28 @@ public class Week1 {
         }
         return cd;
     }
+
+    /**
+     * 跳最小的步数来获取最大的覆盖范围
+     * @param nums
+     * @return int
+     */
+    public int jump(int[] nums) {
+        if (nums.length < 2) {
+            return 0;
+        }
+        int step = 0;
+        int maxCover = 0, curDis = 0;
+        for (int i = 0; i < nums.length; i++) {
+            maxCover = Math.max(maxCover, nums[i] + i);
+            if (i == curDis) {
+                step++;
+                curDis = maxCover;
+                if (curDis >= nums.length - 1) {
+                    break;
+                }
+            }
+        }
+        return step;
+    }
 }
